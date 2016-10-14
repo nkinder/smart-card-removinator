@@ -362,7 +362,7 @@ int updateDisplay(int digit)
 {
     int rc = 0;
     
-    // Start a SPI transaction with a max sped of 20MHz.
+    // Start a SPI transaction with a max speed of 20MHz.
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
     
     // Select the display device.
@@ -473,7 +473,7 @@ byte getCardStatus(int card)
 {
     byte status = 0;
     
-    // Start a SPI transaction with a max sped of 20MHz.
+    // Start a SPI transaction with a max speed of 20MHz.
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
     
     // Pulse the PISO register IC to make it load the card
