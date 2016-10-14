@@ -200,6 +200,19 @@ The `SC*` commands can reutrn the following responses:
 The `REM` command will always return a response of 'OK'.  Using this command
 when no card is currently selected is a no-op and is not considered an error.
 
+The `STA` command response returns a JSON object that represents the status of
+the controller and its card slots.  It is composed of two attributes.  The
+_current_ attribute contains the slot number of the currently selected card.
+The _present_ attribute contains an array containing the ascending card socket
+numbers that have a card present.  Here is an example where card 4 is currently
+selected, and card sockets 1-6 have cards present:
+
+```
+{"current":4,"present":[1,2,3,4,5,6]}
+```
+
+If no card is currently selected, the "current" card will be reported as 0.
+
 The `DBG` command toggles debugging output on or off.  It can return the
 following responses:
 
