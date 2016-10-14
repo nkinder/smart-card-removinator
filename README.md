@@ -50,8 +50,32 @@ parallel-out (SIPO) shift register that the microcontroller interfaces with via
 Serial Peripheral Interface (SPI).  This allows us to simultaneously turn on
 the required display segments while using a minimum number of control pins.
 
-#### Schematic
-TODO(NGK) Add details once schematic is added to the repo
+#### Schematics
+Electrical schematics for the controller are available in the _schematics_
+directory.  They are provided in SVG format.  The controller is spread across
+3 schematics to keep the images at a reasonable size for printing.  Labels are
+used to show where connections are made between components on different
+schematics (or even within a single schematic to simplify things visually).
+
+All of the schematics are also displayed below for convenience.  You can click
+on the images to display a larger version.
+
+The following schematic contains the microcontroller connector, the display
+circuit, and the card socket presence circuit.
+
+[![Controller main](https://nkinder.github.io/images/smart-card-removinator/controller-main.svg "Controller main")][controller-main]
+
+The following schematic contains the multiplexor circuit and the smart card
+reader adapter socket.
+
+[![Controller multiplexer](https://nkinder.github.io/images/smart-card-removinator/controller-multiplexer.svg "Controller multiplexer")][controller-mux]
+
+The following schematic contains the smart card sockets as well as the A-to-B
+board connectors (described in more detail in the PCBs section below).  This
+schematic is really only useful for understanding the pinout of these
+connectors.
+
+[![Controller sockets](https://nkinder.github.io/images/smart-card-removinator/controller-sockets.svg "Controller sockets")][controller-sockets]
 
 #### PCBs
 The controller is made up of 2 PCBs, which stack on top of each other.  They
@@ -197,3 +221,7 @@ ERR_NOCARD
 
 The `?` command responds with the usage information that is shown above.  It is
 intended for interactive use of the controller via a terminal.
+
+[controller-main]: https://nkinder.github.io/images/smart-card-removinator/controller-main.svg
+[controller-mux]: https://nkinder.github.io/images/smart-card-removinator/controller-multiplexer.svg
+[controller-sockets]: https://nkinder.github.io/images/smart-card-removinator/controller-sockets.svg
