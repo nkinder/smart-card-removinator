@@ -99,7 +99,36 @@ Board B contains the following components/circuits:
   * Display circuits and display
   * Card slots 1-4
 
-TODO(NGK) Add more details once the PCB design is added to the repo
+Here is a SVG of board B generated from 
+
+The _pcbs_ directory contains Gerber RS-274-X formatted files for both of the
+controller PCBs.  The file extensions describe which layer a file is for.  The
+extensions map to the layers as follows:
+
+  * .top - top copper
+  * .bot - bottom copper
+  * .smt - top solder mask
+  * .smb - bottom solder mask
+  * .slk - top silk screen
+  * .oln - pcb outline
+  * .dri - drill file
+
+The Gerber files should allow you to have the PCBs manufactured by most any
+PCB fabrication house.  If you want to view the Gerber files, gerbv is a good
+open source option.  Another option if you want to make design changes is
+KiCad, which is a full electronic design automation (EDA) software suite that
+includes a Gerber viewer.
+
+Here is an image of the board A design that was generated from the Gerber files
+using gerbv.  The top copper layer is red, the bottom copper layer is green,
+the drill layer is black, and the silkscreen and outline layers are white
+(click for a larger version):
+
+[![Board A PCB](https://nkinder.github.io/images/smart-card-removinator/board_A.png "Board A PCB")][controller-board-a]
+
+Here is a similar image of board B (click for a larger version):
+
+[![Board B PCB](https://nkinder.github.io/images/smart-card-removinator/board_B.png "Board B PCB")][controller-board-b]
 
 ### Reader Adapter
 The reader adapter is a simple PCB that has contact pads in the standard
@@ -238,3 +267,5 @@ intended for interactive use of the controller via a terminal.
 [controller-main]: https://nkinder.github.io/images/smart-card-removinator/controller-main.svg
 [controller-mux]: https://nkinder.github.io/images/smart-card-removinator/controller-multiplexer.svg
 [controller-sockets]: https://nkinder.github.io/images/smart-card-removinator/controller-sockets.svg
+[controller-board-a]: https://nkinder.github.io/images/smart-card-removinator/board_A.png
+[controller-board-b]: https://nkinder.github.io/images/smart-card-removinator/board_B.png
