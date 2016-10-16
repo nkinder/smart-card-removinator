@@ -141,6 +141,14 @@ _schematics_ directory (click for a larger version):
 
 [![Card Reader Adapter](https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg "Card Reader Adpater")][card-reader-adapter]
 
+Gerber RS-274-X files exist for the card reader adapter in the _pcbs_
+directory.  The file extensions map to the PCB layers using the same
+naming scheme as used for the controller PCBs.
+
+Here is an image of the card reader adapter PCB design:
+
+[![Card Reader PCB](https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png "Card Reader PCB")][card-reader-pcb]
+
 ### Component List
 The list of required components for the controller and reader adapter are
 listed below.  Substitutions can be easily made for the common components such
@@ -164,7 +172,7 @@ changes will be required.
   * RJ45 sockets for controller and reader adapter
 * (10) Vishay K104K15X7RF5TL2
   * 0.1uF decoupling capacitors for ICs
-* (10) KOA Speer MF1/4DCT52R3300F
+* (11) KOA Speer MF1/4DCT52R3300F
   * 330ohm resistors to protect LEDs (display, RJ45 LEDs)
 * (8) KOA Speer MF1/4DCT52R1002F
   * 10Kohms pull-up resistors for card presence circuits
@@ -273,3 +281,4 @@ intended for interactive use of the controller via a terminal.
 [controller-board-a]: https://nkinder.github.io/images/smart-card-removinator/board_A.png
 [controller-board-b]: https://nkinder.github.io/images/smart-card-removinator/board_B.png
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
+[card-reader-pcb]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png
