@@ -429,7 +429,7 @@ void printCardStatus()
     
     // Add any present cards to the JSON array.
     for (i = 1; i <=8; i++) {
-        if ((status >> (i - 1)) & 1) {
+        if (((status >> (i - 1)) & 1) ^ 1) {
             if (need_comma) {
                 status_json += ",";
             }
@@ -492,7 +492,7 @@ byte getCardStatus(int card)
     // If we're checking the status of a single card, adjust the
     // returned status to be 1 or 0.
     if ((card >= 1) && (card <= 8)) {
-        status = (status >> (card - 1)) & 1;
+        status = ((status >> (card - 1)) & 1) ^ 1;
     }
     
     return status;
