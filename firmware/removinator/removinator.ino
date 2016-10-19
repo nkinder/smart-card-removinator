@@ -47,8 +47,8 @@
 #define LOG_DBG_PREFIX "[DBG] "
 
 // Constants
-const byte display_digits[] = { 0x88, 0xDB, 0xA2, 0x92, 0xD1,
-                                0x94, 0x84, 0xDA, 0x80, 0x90 };
+const byte display_digits[] = { 0x84, 0xD7, 0xA1, 0x91, 0xD2,
+                                0x98, 0x88, 0xD5, 0x80, 0x90 };
 const int mux_en_pin = 2;
 const int mux_a0_pin = 3;
 const int mux_a1_pin = 4;
@@ -339,10 +339,10 @@ void removeCard()
 // the LSB and output 'H' is controlled by the MSB.  The shift register
 // outputs are connected to the 7-segment display as follows:
 //
-//       A
+//       B
 //     -----
-//   B |   | C
-//   D -----
+//   A |   | D
+//   C -----
 //   E |   | F
 //     -----
 //       G
