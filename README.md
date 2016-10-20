@@ -130,6 +130,13 @@ Here is a similar image of board B (click for a larger version):
 
 [![Board B PCB](https://nkinder.github.io/images/smart-card-removinator/board_B.png "Board B PCB")][controller-board-b]
 
+Here are some pictures of an assembled controller along with a picture of the
+separated boards (click for larger versions):
+
+[![Assembled Controller Angle](https://nkinder.github.io/images/smart-card-removinator/controller-assembled-angle.png "Assembled Controller Angle")][controller-assembled-angle]
+[![Assembled Controller](https://nkinder.github.io/images/smart-card-removinator/controller-assembled.png "Assembled Controller")][controller-assembled]
+[![Assembled Controller Boards](https://nkinder.github.io/images/smart-card-removinator/controller-assembled-boards.png "Assembled Controller Boards")][controller-assembled-boards]
+
 ### Card Reader Adapter
 The card reader adapter is a simple PCB that has contact pads in the standard
 location described in ISO 7816, which are connected to a RJ45 jack via traces.
@@ -291,5 +298,8 @@ intended for interactive use of the controller via a terminal.
 [controller-sockets]: https://nkinder.github.io/images/smart-card-removinator/controller-sockets.svg
 [controller-board-a]: https://nkinder.github.io/images/smart-card-removinator/board_A.png
 [controller-board-b]: https://nkinder.github.io/images/smart-card-removinator/board_B.png
+[controller-assembled-angle]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-angle.png
+[controller-assembled-boards]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-boards.png
+[controller-assembled]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled.png
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
 [card-reader-pcb]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png
