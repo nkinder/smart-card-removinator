@@ -186,6 +186,17 @@ changes will be required.
   * Upper (B) board connectors
 * (2) TE Connectivity 6-535541-6
   * Microcontroller header sockets
+* (12) Bivar 911-450
+  * Nylon spacers for PCB mounting (.450" length, .250" OD, .125" ID)
+
+### Enclosure
+A SVG file to create a very simple enclosure is included in the _enclosure_
+directory.  The design is for two identical transparent acrylic plates, which
+are used as a base and a top.  The assembly can be screwed together with .125"
+hardware by using the nylon spacers listed in the components section above.
+Transparent acrylic will allow the display to be visible through the top plate.
+The SVG file includes a labeled 1" square as a scaling reference, which is
+required by some laser cutting shops when using SVG files.
 
 Firmware
 --------
