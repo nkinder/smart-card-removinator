@@ -3,7 +3,7 @@ Smart Card Removinator
 
 The Smart Card Removinator is a hardware device designed for automation of
 smart card testing with physical tokens.  Testing with physical tokens often
-requires smart cards to by removed and inserted from the card reader to triger
+requires smart cards to by removed and inserted from the card reader to trigger
 things like screen locking, or simply to test multiple models of tokens or with
 different certificates.  This type of testing is usually handled manually when
 testing with emulated tokens is not desirable.
