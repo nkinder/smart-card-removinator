@@ -29,7 +29,7 @@ The heart of the controller is the switching circuit that is used to actually
 switch between the pyhsical smart cards.  Switching is handled by a set of
 analog multiplexer ICs are used to switch the contacts of the 8 controller
 card slots to a single output that connects to the card reader contacts via a
-card adapter.  One 8:1 multiplexer is used for each contact of the smard card,
+card adapter.  One 8:1 multiplexer is used for each contact of the smart card,
 allowing for 8 total cards that can be switched.  The logic control pins of the
 multiplexer ICs are tied together so they are controlled consistently from the
 same signals.  The controller uses Maxim MAX4638 multiplexer ICs, whose
@@ -65,7 +65,7 @@ circuit, and the card socket presence circuit.
 
 [![Controller main](https://nkinder.github.io/images/smart-card-removinator/controller-main.svg "Controller main")][controller-main]
 
-The following schematic contains the multiplexor circuit and the smart card
+The following schematic contains the multiplexer circuit and the smart card
 reader adapter socket.
 
 [![Controller multiplexer](https://nkinder.github.io/images/smart-card-removinator/controller-multiplexer.svg "Controller multiplexer")][controller-mux]
@@ -98,8 +98,6 @@ Board B contains the following components/circuits:
 
   * Display circuits and display
   * Card slots 1-4
-
-Here is a SVG of board B generated from 
 
 The _pcbs_ directory contains Gerber RS-274-X formatted files for both of the
 controller PCBs.  The file extensions describe which layer a file is for.  The
@@ -139,7 +137,7 @@ separated boards (click for larger versions):
 
 ### Card Reader Adapter
 The card reader adapter is a simple PCB that has contact pads in the standard
-location described in ISO 7816, which are connected to a RJ45 jack via traces.
+locations described in ISO 7816, which are connected to a RJ45 jack via traces.
 It is important that the reader adapter uses a .031" thick PCB, otherwise it
 may not fit into the slot of your smart card reader.
 
