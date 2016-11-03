@@ -55,6 +55,7 @@ const int mux_a1_pin = 4;
 const int mux_a2_pin = 5;
 const int display_select_pin = 6;
 const int socket_switch_select_pin = 7;
+const int reader_switch_pin = 8;
 
 // Globals
 char command[CMD_MAX_LEN + 1];
@@ -84,6 +85,7 @@ void setup()
     pinMode(mux_a2_pin, OUTPUT);
     pinMode(display_select_pin, OUTPUT);
     pinMode(socket_switch_select_pin, OUTPUT);
+    pinMode(reader_switch_pin, OUTPUT);
     
     // Set SPI slave select pins high to ignore master.  We will
     // enable SPI devices as needed.
@@ -232,6 +234,13 @@ int insertCard(int card)
         return 1;
     }
     
+    // First remove the existing card.  This will cycle the reader switch
+    // pin to ensure that the reader actually detects a removal/insertion
+    // event.  We give this a slight delay to ensure it triggers an event
+    // in the card reader driver.
+    removeCard();
+    delay(200);
+
     // Set the logic pins to select the requested card according to
     // the truth table.  We disable the muxes first to ensure we switch
     // directly to the requested card in cases where we have to change
@@ -299,6 +308,10 @@ int insertCard(int card)
         break;
     }
     
+    // Set the reader switch pin to low to trigger an insertion
+    // event.
+    digitalWrite(reader_switch_pin, LOW);
+
     // Update the display to show the inserted card number.
     updateDisplay(card);
     debug_print(String("Inserted card " + String(card)));
@@ -316,10 +329,13 @@ int insertCard(int card)
 // this is just a no-op.
 //
 // We "remove" a card be disabling the multiplexor ICs by setting
-// their enable pin to low.
+// their enable pin to low.  This disconnects the card contacts from
+// the card reader adapter.  We also set the reader switch pin to HIGH
+// so the reader thinks that the card was physically removed.
 //
 void removeCard()
 {
+    digitalWrite(reader_switch_pin, HIGH);
     digitalWrite(mux_en_pin, LOW);
     debug_print(String("Removed card " + String(inserted_card)));
     inserted_card = 0;
