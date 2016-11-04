@@ -139,7 +139,18 @@ separated boards (click for larger versions):
 The card reader adapter is a simple PCB that has contact pads in the standard
 locations described in ISO 7816, which are connected to a RJ45 jack via traces.
 It is important that the reader adapter uses a .031" thick PCB, otherwise it
-may not fit into the slot of your smart card reader.
+may not fit into the slot of your smart card reader.  The card reader adapter
+stays inserted in the card reader, and is connected to the controller via a
+standard ethernet cable.
+
+Most card readers also use an internal switch to detect if a card is physically
+inserted.  This is used to trigger insertion and removal event in the smart
+card reader drivers that operating systems use.  Since the controller
+electronically switches cards, insertion and removal events will not be
+triggered.  The controller can use a logic pin to control the switch in the
+card reader, despite the fact that the card reader adapter stays inserted.
+This requires minor modifications to the card reader, which are described in
+the _Card Reader Modifications_ section below.
 
 Here is a schematic of the card reader adapter, which can also be found in the
 _schematics_ directory (click for a larger version):
@@ -202,6 +213,33 @@ hardware by using the nylon spacers listed in the components section above.
 Transparent acrylic will allow the display to be visible through the top plate.
 The SVG file includes a labeled 1" square as a scaling reference, which is
 required by some laser cutting shops when using SVG files.
+
+### Card Reader Modifications
+The internal switch in many card readers that is used to detect if a card is
+physically present is usually a normally closed (NC) switch.  This means that
+the switch is typically connected to ground when no card is present, and the
+connection is broken when a card is inserted.  This allows us to use a common
+2N3904 bipolar NPN transistor across both sides of the switch, which can
+simulate closing the switch even when the card reader adapter is inserted.  The
+firware uses digital I/O pin 8 on the microcontroller to control the state of
+the transistor.
+
+Here is a schematic of the required card reader modification, which can also be
+found in the _schematics_ directory (click for a larger version):
+
+[![Card Reader Mod](https://nkinder.github.io/images/smart-card-removinator/card-reader-mod.svg "Card Reader Mod")][card-reader-mod]
+
+The current revision of the controller PCB does not provide a socket that can
+be used to connect to the card reader.  A short cable with an in-line socket
+can be soldered to the top of microcontroller or to the bottom of controller
+board A for the proper pin.  A future version of the PCB will add an on-board
+socket.
+
+Similarly, the card reader will need to be modified to have a cable that
+connects to the cable added to the controller.  Inside of the reader, the
+transistor and resistor to limit the current to the transistor base will need
+to be soldered and arranged to fit inside of the housing.  The cable conductor
+should be connected to the resistor.
 
 Firmware
 --------
@@ -300,4 +338,5 @@ intended for interactive use of the controller via a terminal.
 [controller-assembled-boards]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-boards.png
 [controller-assembled]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled.png
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
+[card-reader-mod]: https://nkinder.github.io/images/smart-card-removinator/card-reader-mod.svg
 [card-reader-pcb]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png
