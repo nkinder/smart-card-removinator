@@ -67,7 +67,7 @@ void setup();
 void loop();
 int getCommand();
 int insertCard(int card);
-void removeCard();
+void removeCard(boolean print_response);
 int updateDisplay(int digit);
 void printCardStatus();
 byte getCardStatus(int card);
@@ -96,7 +96,7 @@ void setup()
     SPI.begin();
     
     // Start with no card inserted.
-    removeCard();
+    removeCard(false);
     
     // Set up the serial port.
     Serial.begin(9600);
@@ -124,7 +124,7 @@ void loop()
         } else if (strcmp(command, CMD_CARD_8) == 0) {
             insertCard(8);
         } else if (strcmp(command, CMD_REMOVE_CARD) == 0) {
-            removeCard();
+            removeCard(true);
         } else if (strcmp(command, CMD_STATUS) == 0) {
             printCardStatus();
         } else if (strcmp(command, CMD_HELP) == 0) {
@@ -238,7 +238,7 @@ int insertCard(int card)
     // pin to ensure that the reader actually detects a removal/insertion
     // event.  We give this a slight delay to ensure it triggers an event
     // in the card reader driver.
-    removeCard();
+    removeCard(false);
     delay(200);
 
     // Set the logic pins to select the requested card according to
@@ -333,16 +333,26 @@ int insertCard(int card)
 // the card reader adapter.  We also set the reader switch pin to HIGH
 // so the reader thinks that the card was physically removed.
 //
-void removeCard()
+// Parameters:
+//     print_response - Print response to the serial port if TRUE.  We
+//                      call this function internally and only want to
+//                      print a response if the user explicitly sent a
+//                      command to remove the card.
+//
+void removeCard(boolean print_response)
 {
     digitalWrite(reader_switch_pin, HIGH);
     digitalWrite(mux_en_pin, LOW);
     debug_print(String("Removed card " + String(inserted_card)));
     inserted_card = 0;
-    
+
     // Blank the display
     updateDisplay(-1);
-    Serial.println(RESP_OK);
+
+    // Print our serial response if requested.
+    if (print_response) {
+        Serial.println(RESP_OK);
+    }
 }
 
 // updateDisplay()
