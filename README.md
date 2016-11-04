@@ -241,6 +241,28 @@ transistor and resistor to limit the current to the transistor base will need
 to be soldered and arranged to fit inside of the housing.  The cable conductor
 should be connected to the resistor.
 
+Below are some images of a HID OMNIKEY 3121 smart card reader that has been
+modified as described above.  This first image shows where the switch contacts
+are located on an unmodified reader:
+
+[![OMNIKEY Pads](https://nkinder.github.io/images/smart-card-removinator/omnikey3121-pads.png "OMNIKEY Pads")][omnikey-pads]
+
+This image shows the addition of a transistor and resistor as shown in the
+previous schematic.  With some bending and trimming of the transistor leads,
+the modification can be made to easily fit.  The green wire soldered to the
+transistor emitter lead connects the ground of the smart card reader to the
+ground on the controller via a cable.  This ensures we have a common ground
+between the controller and the card reader.  An additional wire from the cable
+connected to the controller is soldered to the resistor lead on the left side
+if the image.  This leads to the digital I/O pin on the microcontroller.
+
+[![OMNIKEY Transistor](https://nkinder.github.io/images/smart-card-removinator/omnikey3121-transistor.png "OMNIKEY Pads")][omnikey-transistor]
+
+Here is an image of the reassembled smart card reader, which now has an
+additional cable that connects to the appropriate pins on the microcontroller:
+
+[![OMNIKEY Modified](https://nkinder.github.io/images/smart-card-removinator/omnikey3121-modified.png "OMNIKEY Pads")][omnikey-modified]
+
 Firmware
 --------
 
@@ -340,3 +362,6 @@ intended for interactive use of the controller via a terminal.
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
 [card-reader-mod]: https://nkinder.github.io/images/smart-card-removinator/card-reader-mod.svg
 [card-reader-pcb]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png
+[omnikey-pads]: https://nkinder.github.io/images/smart-card-removinator/omnikey3121-pads.png
+[omnikey-transistor]: https://nkinder.github.io/images/smart-card-removinator/omnikey3121-transistor.png
+[omnikey-modified]: https://nkinder.github.io/images/smart-card-removinator/omnikey3121-modified.png
