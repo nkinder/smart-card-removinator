@@ -165,6 +165,10 @@ Here is an image of the card reader adapter PCB design:
 
 [![Card Reader PCB](https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png "Card Reader PCB")][card-reader-pcb]
 
+Here is an image of a completed card reader adapter:
+
+[![Card Reader Adapter Completed](https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter-pcb.png "Card Reader Adapter Completed")][card-reader-adapter-completed]
+
 ### Component List
 The list of required components for the controller and reader adapter are
 listed below.  Substitutions can be easily made for the common components such
@@ -360,6 +364,7 @@ intended for interactive use of the controller via a terminal.
 [controller-assembled-boards]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-boards.png
 [controller-assembled]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled.png
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
+[card-reader-adapter-completed]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter-pcb.png
 [card-reader-mod]: https://nkinder.github.io/images/smart-card-removinator/card-reader-mod.svg
 [card-reader-pcb]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.png
 [omnikey-pads]: https://nkinder.github.io/images/smart-card-removinator/omnikey3121-pads.png
