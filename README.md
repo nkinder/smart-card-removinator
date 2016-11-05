@@ -144,7 +144,7 @@ stays inserted in the card reader, and is connected to the controller via a
 standard ethernet cable.
 
 Most card readers also use an internal switch to detect if a card is physically
-inserted.  This is used to trigger insertion and removal event in the smart
+inserted.  This is used to trigger insertion and removal events in the smart
 card reader drivers that operating systems use.  Since the controller
 electronically switches cards, insertion and removal events will not be
 triggered.  The controller can use a logic pin to control the switch in the
@@ -225,7 +225,7 @@ the switch is typically connected to ground when no card is present, and the
 connection is broken when a card is inserted.  This allows us to use a common
 2N3904 bipolar NPN transistor across both sides of the switch, which can
 simulate closing the switch even when the card reader adapter is inserted.  The
-firware uses digital I/O pin 8 on the microcontroller to control the state of
+firmware uses digital I/O pin 8 on the microcontroller to control the state of
 the transistor.
 
 Here is a schematic of the required card reader modification, which can also be
