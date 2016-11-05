@@ -253,12 +253,10 @@ are located on an unmodified reader:
 
 This image shows the addition of a transistor and resistor as shown in the
 previous schematic.  With some bending and trimming of the transistor leads,
-the modification can be made to easily fit.  The green wire soldered to the
-transistor emitter lead connects the ground of the smart card reader to the
-ground on the controller via a cable.  This ensures we have a common ground
-between the controller and the card reader.  An additional wire from the cable
-connected to the controller is soldered to the resistor lead on the left side
-if the image.  This leads to the digital I/O pin on the microcontroller.
+the modification can be made to easily fit.  The white wire is from the cable
+connected to the controller, which is soldered to the resistor lead on the left
+side of the image, which in turn is connected to the base lead of the
+transistor.  This wire leads to the digital I/O pin on the microcontroller.
 
 [![OMNIKEY Transistor](https://nkinder.github.io/images/smart-card-removinator/omnikey3121-transistor.png "OMNIKEY Pads")][omnikey-transistor]
 
