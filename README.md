@@ -206,17 +206,34 @@ changes will be required.
   * Upper (B) board connectors
 * (2) TE Connectivity 6-535541-6
   * Microcontroller header sockets
-* (12) Bivar 911-450
-  * Nylon spacers for PCB mounting (.450" length, .250" OD, .125" ID)
 
 ### Enclosure
 A SVG file to create a very simple enclosure is included in the _enclosure_
 directory.  The design is for two identical transparent acrylic plates, which
-are used as a base and a top.  The assembly can be screwed together with .125"
-hardware by using the nylon spacers listed in the components section above.
-Transparent acrylic will allow the display to be visible through the top plate.
-The SVG file includes a labeled 1" square as a scaling reference, which is
-required by some laser cutting shops when using SVG files.
+are used as a base and a top.  Transparent acrylic will allow the display to be
+visible through the top plate.  The SVG file includes a labeled 1" square as a
+scaling reference, which is required by some laser cutting shops when using SVG
+files.
+
+Here is an image of a completed controller in it's enclosure, which was made
+from 6mm thick acrylic (click for a larger version):
+
+[![Controller Enclosure](https://nkinder.github.io/images/smart-card-removinator/controller-enclosure.png "Controller Enclosure")][controller-enclosure]
+
+In addition to the acrylic plates, the following components (or similar
+equivalents) can be used to complete the enclosure:
+
+* (12) Bivar 911-450
+  * Nylon spacers for PCB mounting (.450" length, .250" OD, .125" ID)
+* (4) McMaster-Carr 92005A140
+  * Mounting screws (M3 x 60mm x 0.5mm pitch)
+* (4) McMaster-Carr 94000A330
+  * Acorn nuts (M3 x 0.5mm pitch)
+* (4) McMaster-Carr 9540K841
+  * Rubber feet (.500" OD, .250" tall, .125" ID)
+
+Note that the above screws will need to be trimmed to be about 5mm shorter to
+allow the assembly to tighten together properly.
 
 ### Card Reader Modifications
 The internal switch in many card readers that is used to detect if a card is
@@ -361,6 +378,7 @@ intended for interactive use of the controller via a terminal.
 [controller-assembled-angle]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-angle.png
 [controller-assembled-boards]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled-boards.png
 [controller-assembled]: https://nkinder.github.io/images/smart-card-removinator/controller-assembled.png
+[controller-enclosure]: https://nkinder.github.io/images/smart-card-removinator/controller-enclosure.png
 [card-reader-adapter]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter.svg
 [card-reader-adapter-completed]: https://nkinder.github.io/images/smart-card-removinator/card-reader-adapter-pcb.png
 [card-reader-mod]: https://nkinder.github.io/images/smart-card-removinator/card-reader-mod.svg
