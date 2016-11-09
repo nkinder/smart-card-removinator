@@ -1,0 +1,34 @@
+Removinator
+===========
+
+A library for controlling the Smart Card Removinator device.
+
+The Smart Card Removinator is a hardware device designed for automation of
+smart card testing with physical tokens. Testing with physical tokens often
+requires smart cards to by removed and inserted from the card reader to trigger
+things like screen locking, or simply to test multiple models of tokens or with
+different certificates. The Smart Card Removinator electronically switches the
+card that is connected to a reader from a bank of cards in response to commands
+issued to it over a serial interface.
+
+The removinator library provides a convenient way of interfacing with the
+serial interface of the Smart Card Removinator from Python programs.
+
+See the Smart Card Removinator project page for more information:
+
+https://github.com/nkinder/smart-card-removinator
+
+Requirements
+------------
+
+Runtime
+~~~~~~~
+
+- pyserial
+
+Installation and testing
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  pip
+-  setuptools >= 18.0
+-  wheel
