@@ -469,6 +469,9 @@ void printCardStatus()
         
     // Return the status via serial.
     Serial.println(status_json);
+
+    // Terminate our serial response.
+    Serial.println(RESP_OK);
 }
 
 // getCardStatus()
@@ -537,6 +540,9 @@ void toggleDebug()
     } else {
         Serial.println(RESP_DBG_OFF);
     }
+
+    // Terminate our serial response.
+    Serial.println(RESP_OK);
 }
 
 // debug_print()
@@ -619,4 +625,7 @@ void usage()
     Serial.print(CMD_HELP);
     Serial.print("\t");
     Serial.println("Show usage information");
+
+    // Terminate our serial response.
+    Serial.println(RESP_OK);
 }
