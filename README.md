@@ -370,6 +370,21 @@ ERR_NOCARD
 The `?` command responds with the usage information that is shown above.  It is
 intended for interactive use of the controller via a terminal.
 
+Software
+--------
+The _client_ directory contains the _removinator_ Python module.  This module
+allows for Python programs to easily control the Smart Card Removinator
+hardware.  This module is available on PyPi at
+https://pypi.python.org/pypi/removinator, so it can be easily installed by
+running the following command:
+
+```
+pip install removinator
+```
+
+API documentation for the _removinator_ Python module is available at
+http://smart-card-removinator.readthedocs.io/
+
 [controller-main]: https://nkinder.github.io/images/smart-card-removinator/controller-main.svg
 [controller-mux]: https://nkinder.github.io/images/smart-card-removinator/controller-multiplexer.svg
 [controller-sockets]: https://nkinder.github.io/images/smart-card-removinator/controller-sockets.svg
