@@ -566,7 +566,7 @@ void debug_print(String msg)
 //
 void usage()
 {
-    Serial.println("--- Smart Card Removinator (v1.0.0) ---");
+    Serial.println("--- Smart Card Removinator (v1.0.1) ---");
     Serial.println("Command Format:");
     Serial.print("\t");
     Serial.print("Prefix:");
