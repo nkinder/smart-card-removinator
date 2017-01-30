@@ -1,0 +1,12 @@
+This directory contains example programs which use the removinator module.
+These examples expect that you have the removinator module installed already.
+
+In addition, you will need to ensure that your user has permission to use the
+serial port to interface with the Removinator controller device.  On many Linux
+systems, this can be achieved by adding your user to the 'dialout' local group.
+If you add your user to this group, you will need to re-login for the
+group membership to take effect.
+
+Some of these examples may require additional Python modules or utilities.  It
+is recommended that you first look at the example code to see what it requires
+before attempting to run it.
