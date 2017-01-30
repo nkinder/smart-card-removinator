@@ -318,7 +318,7 @@ identify common errors.
 If an illegal command is entered (missing envelope, unknown command, etc.), the
 following response codes can be returned:
 
-  * _ERR_UNKOWN_CMD_
+  * _ERR_UNKNOWN_CMD_
     * A propoer envelope was used, but the command is unknown.
   * _ERR_CMDLEN_
     * The command envelope prefix was used, but we didn't receive a terminator.
