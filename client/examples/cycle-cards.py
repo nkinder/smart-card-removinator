@@ -21,7 +21,7 @@ for card in range(1, 9):
         print('Inserted card {0}'.format(card))
         print('{0}'.format(subprocess.check_output(['pkcs15-tool',
                                                    '--list-certificates'])
-                                                   .rstrip()))
+                           .rstrip()))
     except removinator.SlotError:
         print('Card {0} is not inserted'.format(card))
 
