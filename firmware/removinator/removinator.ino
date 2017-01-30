@@ -328,7 +328,7 @@ int insertCard(int card)
 // Remove the inserted card.  If a card is not inserted,
 // this is just a no-op.
 //
-// We "remove" a card be disabling the multiplexor ICs by setting
+// We "remove" a card by disabling the multiplexor ICs by setting
 // their enable pin to low.  This disconnects the card contacts from
 // the card reader adapter.  We also set the reader switch pin to HIGH
 // so the reader thinks that the card was physically removed.
