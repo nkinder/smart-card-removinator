@@ -234,7 +234,7 @@ class Removinator:
         self.send_command('DBG')
 
         # Check the response to see if we are in the requested state.
-        if (debug and (self.last_response == 'DBG_OFF')):
+        if (debug and (self.last_response.rstrip().endswith('DBG_OFF'))):
             self.send_command('DBG')
-        elif (not debug and (self.last_response == 'DBG_ON')):
+        elif (not debug and (self.last_response.rstrip().endswith('DBG_ON'))):
             self.send_command('DBG')
