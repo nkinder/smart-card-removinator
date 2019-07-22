@@ -35,12 +35,13 @@ def _discover_removinator():
             if ('dev' in files):
                 device = subprocess.check_output(['udevadm', 'info', '-q',
                                                   'name', '-p', '{0}'
-                                                  .format(root)]).rstrip()
+                                                  .format(root)],
+                                                 encoding='utf-8').rstrip()
                 if (device.startswith('tty')):
                     output = subprocess.check_output(['udevadm', 'info', '-q',
                                                       'property', '--export',
-                                                      '-p', '{0}'.format(root)]
-                                                     )
+                                                      '-p', '{0}'.format(root)],
+                                                     encoding='utf-8')
                     try:
                         output.index('ID_MODEL=\'Arduino_Micro\'')
                         return '/dev/{0}'.format(device)
