@@ -172,7 +172,14 @@ class Removinator:
         """
 
         self.send_command('STA')
-        return json.loads(self.last_response.rstrip())
+
+        # Strip out any debug output responses before
+        # attempting to parse the JSON status.
+        for resp_line in self.last_response.splitlines():
+            if (not resp_line.startswith('[DBG]')):
+                break
+
+        return json.loads(resp_line)
 
     def send_command(self, command):
         """
