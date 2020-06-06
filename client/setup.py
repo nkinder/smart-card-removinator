@@ -9,7 +9,7 @@ with open('README') as f:
 
 setup(
     name='removinator',
-    version='0.1.0.dev2',
+    version='0.1.0.dev3',
     description='A library for controlling the Smart Card Removinator',
     long_description=long_description,
     url='https://github.com/nkinder/smart-card-removinator',
