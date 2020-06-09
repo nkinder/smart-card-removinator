@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import removinator
+from removinator import removinator
 import subprocess
 
 # This example cycles through each card slot in the Removinator.  Any
