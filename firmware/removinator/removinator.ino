@@ -14,15 +14,18 @@
 
 // SPI is used to communicate with shift registers.
 #include <SPI.h>
+#include <EEPROM.h>
 
 // Serial command syntax
 #define CMD_PREFIX '#'
 #define CMD_TERM '\r'
-#define CMD_MAX_LEN 3
+#define CMD_MAX_LEN 7
 
 // Serial commands
 #define CMD_CARD_N "SC"
 #define CMD_REMOVE_CARD "REM"
+#define CMD_LOCK_N "LOCK"
+#define CMD_UNLOCK_N "UNLOCK"
 #define CMD_STATUS "STA"
 #define CMD_DEBUG "DBG"
 #define CMD_HELP "?"
@@ -35,6 +38,7 @@
 #define ERR_CMDLEN "ERR_CMDLEN"
 #define ERR_PROTOCOL "ERR_PROTOCOL"
 #define ERR_NOCARD "ERR_NOCARD"
+#define ERR_LOCKED "ERR_LOCKED"
 #define ERR_BADIDX "ERR_BADIDX"
 
 // Debug output defines
@@ -52,6 +56,8 @@ const int mux_a2_pin = 5;
 const int display_select_pin = 6;
 const int socket_switch_select_pin = 7;
 const int reader_switch_pin = 8;
+unsigned const char eeprom_magic[] = { 0xcb, 0x21, 0xc7, 0x8a };
+const int eeprom_size = 512;  // including the magic above
 
 // Globals
 char command[CMD_MAX_LEN + 1];
@@ -64,6 +70,11 @@ void loop();
 int getCommand();
 int insertCard(int card);
 void removeCard(bool print_response);
+int lockCard(int card);
+void unlockCard(int card);
+bool validEEPROM();
+unsigned char getLockBitmap();
+void setLockBitmap(unsigned char value);
 int updateDisplay(int digit);
 void printCardStatus();
 unsigned char getCardStatus(int card);
@@ -124,6 +135,20 @@ void loop()
             }
         } else if (CMD_MATCHES(CMD_REMOVE_CARD)) {
             removeCard(true);
+        } else if (INDEXED_CMD_MATCHES(CMD_LOCK_N)) {
+            index = CMD_INDEX(CMD_LOCK_N);
+            if (VALID_INDEX(index)) {
+                lockCard(atoi(index));
+            } else {
+                Serial.println(ERR_BADIDX);
+            }
+        } else if (INDEXED_CMD_MATCHES(CMD_UNLOCK_N)) {
+            index = CMD_INDEX(CMD_UNLOCK_N);
+            if (VALID_INDEX(index)) {
+                unlockCard(atoi(index));
+            } else {
+                Serial.println(ERR_BADIDX);
+            }
         } else if (CMD_MATCHES(CMD_STATUS)) {
             printCardStatus();
         } else if (CMD_MATCHES(CMD_HELP)) {
@@ -230,6 +255,13 @@ int insertCard(int card)
     // ERR_NOCARD via serial and don't do any switching.
     if (!getCardStatus(card)) {
         Serial.println(ERR_NOCARD);
+        return 1;
+    }
+
+    // Check if the requested card slot is locked.
+    unsigned char bitmap = getLockBitmap();
+    if (bitmap & (1 << (card - 1))) {
+        Serial.println(ERR_LOCKED);
         return 1;
     }
 
@@ -354,6 +386,160 @@ void removeCard(bool print_response)
     }
 }
 
+// lockCard()
+//
+// Locks the specified card slot, making another lock operation on the same slot
+// fail if attempted. An unlock must be issued on the slot to restore successful
+// locking functionality.
+//
+// The idea is to limit accidental use in unexpected scenarios, bricking cards
+// by a client entering a wrong password repeatedly due to an automation bug.
+// The client can lock a slot before using it and unlock it only if everything
+// went smoothly. Any infrastructure crash or automation bug should leave it
+// locked, letting a human investigate the situation and manually reset the card
+// password attempts using an external card reader and a correct password.
+//
+// Parameters:
+//     card - The card number to lock (1-8).
+//
+// Returns:
+//     0 - Success
+//     Non-zero - Error
+//
+int lockCard(int card)
+{
+    unsigned char bitmap = getLockBitmap();
+    int index = card - 1;
+
+    // Don't allow locking an empty slot.
+    if (!getCardStatus(card)) {
+        Serial.println(ERR_NOCARD);
+        return 1;
+    }
+
+    // Refuse to lock an already locked slot.
+    if (bitmap & (1 << index)) {
+        Serial.println(ERR_LOCKED);
+        return 1;
+    }
+
+    bitmap |= 1 << index;
+    setLockBitmap(bitmap);
+
+    Serial.println(RESP_OK);
+    debug_print(String("Locked card " + String(card)));
+
+    return 0;
+}
+
+// unlockCard()
+//
+// Unlocks the specified card slot, see lockCard().
+//
+// Parameters:
+//     card - The card number to unlock (1-8).
+//
+void unlockCard(int card)
+{
+    unsigned char bitmap = getLockBitmap();
+    bitmap &= ~(1 << (card - 1));
+    setLockBitmap(bitmap);
+
+    Serial.println(RESP_OK);
+    debug_print(String("Unlocked card " + String(card)));
+}
+
+// validEEPROM()
+//
+// Returns true if the EEPROM contains valid bitmap data written by us,
+// false otherwise.
+//
+bool validEEPROM()
+{
+    unsigned int i;
+    for (i = 0; i < sizeof(eeprom_magic) / sizeof(unsigned char); i++) {
+        if (EEPROM.read(i) != eeprom_magic[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// getLockBitmap()
+//
+// Returns an 8-bit bitmap with bit indices representing card slots,
+// and bit values locked (1) or unlocked (0) status.
+//
+// The EEPROM wear-leveling uses a simple linear traversal, using 2-byte
+// chunks to represent a usage flag (first byte) and the lock bitmap
+// (second byte).
+//     0x04    0x05    0x06    0x07    0x08    0x09    (address)
+//   +------------------------------------------------------------
+//   | flag | bitmap | flag | bitmap | flag | bitmap | ...
+//   +------------------------------------------------------------
+// The usage flag can be either 0x00 or 0xff, and the place at which it
+// flips from one value to the other is the last-written spot.
+// If all usage flags are the same, the last chunk should be used.
+//
+unsigned char getLockBitmap()
+{
+    unsigned int i;
+
+    if (!validEEPROM()) {
+        // We have never written to EEPROM - consider everything unlocked.
+        return 0x00;
+    }
+
+    int start_addr = sizeof(eeprom_magic) / sizeof(unsigned char);
+
+    for (i = start_addr; i < eeprom_size-3; i += 2) {
+        if (EEPROM.read(i) != EEPROM.read(i+2)) {
+            return EEPROM.read(i+1);
+        }
+    }
+
+    // The flag never changed, but EEPROM magic signature was present,
+    // which means the last written chunk was on the last possible index.
+    return EEPROM.read(i+1);
+}
+
+// setLockBitmap()
+//
+// Stores an 8-bit bitmap in the EEPROM, as a counterpart to getLockBitmap().
+//
+// Parameters:
+//     value - The bitmap value to be stored in EEPROM.
+//
+void setLockBitmap(unsigned char value)
+{
+    unsigned int i;
+
+    if (!validEEPROM()) {
+        // We have never written to EEPROM - initialize it.
+        for (i = 0; i < sizeof(eeprom_magic) / sizeof(unsigned char); i++) {
+            EEPROM.write(i, eeprom_magic[i]);
+        }
+        for (; i < eeprom_size; i++) {
+            EEPROM.write(i, 0x00);
+        }
+    }
+
+    int start_addr = sizeof(eeprom_magic) / sizeof(unsigned char);
+
+    // Find the last used chunk.
+    for (i = start_addr; i < eeprom_size-3; i += 2) {
+        if (EEPROM.read(i) != EEPROM.read(i+2)) {
+            break;
+        }
+    }
+
+    // Write a new value to the next chunk.
+    int new_index = i < eeprom_size-3 ? i+2 : start_addr;
+    unsigned char new_flag = ~EEPROM.read(new_index);
+    EEPROM.write(new_index, new_flag);
+    EEPROM.write(new_index+1, value);
+}
+
 // updateDisplay()
 //
 // Updates the display to the requested digit.
@@ -443,16 +629,15 @@ void printCardStatus()
     int i = 0;
     int need_comma = 0;
     unsigned char status = 0;
-    String status_json = "{\"current\":";
+    String status_json = "{";
 
     // Add the currently inserted card to the status.
+    status_json += "\"current\":";
     status_json += inserted_card;
-    status_json += ",\"present\":[";
-
-    // Get the status of all card sockets.
-    status = getCardStatus(0);
 
     // Add any present cards to the JSON array.
+    status = getCardStatus(0);
+    status_json += ",\"present\":[";
     for (i = 1; i <=8; i++) {
         if (((status >> (i - 1)) & 1) ^ 1) {
             if (need_comma) {
@@ -462,9 +647,26 @@ void printCardStatus()
             need_comma = 1;
         }
     }
+    status_json += "]";
+
+    // Add currently locked card slots.
+    need_comma = 0;
+    status = getLockBitmap();
+    status_json += ",\"locked\":[";
+    for (i = 0; i < 8; i++) {
+        if (status & (1 << i)) {
+            if (need_comma) {
+                status_json += ",";
+            }
+            // Cards/slots are 1-8, not 0-7
+            status_json += i+1;
+            need_comma = 1;
+        }
+    }
+    status_json += "]";
 
     // Terminate the JSON status.
-    status_json += "]}";
+    status_json += "}";
 
     // Return the status via serial.
     Serial.println(status_json);
@@ -585,6 +787,16 @@ void usage()
     Serial.print(CMD_REMOVE_CARD);
     Serial.print("\t");
     Serial.println("Remove inserted card");
+    Serial.print("\t");
+    Serial.print(CMD_LOCK_N);
+    Serial.print("N");
+    Serial.print("\t");
+    Serial.println("Lock card slot N (where N is 1-8)");
+    Serial.print("\t");
+    Serial.print(CMD_UNLOCK_N);
+    Serial.print("N");
+    Serial.print("\t");
+    Serial.println("Unlock card slot N (where N is 1-8)");
     Serial.print("\t");
     Serial.print(CMD_STATUS);
     Serial.print("\t");
