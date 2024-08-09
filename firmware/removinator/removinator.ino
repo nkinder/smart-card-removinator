@@ -47,8 +47,10 @@
 #define LOG_DBG_PREFIX "[DBG] "
 
 // Constants
-const byte display_digits[] = { 0x84, 0xD7, 0xA1, 0x91, 0xD2,
-                                0x98, 0x88, 0xD5, 0x80, 0x90 };
+unsigned const char display_digits[] = {
+    0x84, 0xD7, 0xA1, 0x91, 0xD2,
+    0x98, 0x88, 0xD5, 0x80, 0x90,
+};
 const int mux_en_pin = 2;
 const int mux_a0_pin = 3;
 const int mux_a1_pin = 4;
@@ -60,17 +62,17 @@ const int reader_switch_pin = 8;
 // Globals
 char command[CMD_MAX_LEN + 1];
 int inserted_card = 0;
-boolean debug = false;
+bool debug = false;
 
 // Function prototypes
 void setup();
 void loop();
 int getCommand();
 int insertCard(int card);
-void removeCard(boolean print_response);
+void removeCard(bool print_response);
 int updateDisplay(int digit);
 void printCardStatus();
-byte getCardStatus(int card);
+unsigned char getCardStatus(int card);
 void toggleDebug();
 void debug_print(String msg);
 void usage();
@@ -339,7 +341,7 @@ int insertCard(int card)
 //                      print a response if the user explicitly sent a
 //                      command to remove the card.
 //
-void removeCard(boolean print_response)
+void removeCard(bool print_response)
 {
     digitalWrite(reader_switch_pin, HIGH);
     digitalWrite(mux_en_pin, LOW);
@@ -443,7 +445,7 @@ void printCardStatus()
 {
     int i = 0;
     int need_comma = 0;
-    byte status = 0;
+    unsigned char status = 0;
     String status_json = "{\"current\":";
 
     // Add the currently inserted card to the status.
@@ -488,7 +490,7 @@ void printCardStatus()
 //          card sockets.
 //
 // Returns:
-//   status - A byte indicating the status for the requested
+//   status - A char indicating the status for the requested
 //            card sockets.  If a single card socket is being
 //            checked, this byte will be 0x01 if a card is
 //            inserted, and 0x00 if the socket is empty.  If
@@ -498,9 +500,9 @@ void printCardStatus()
 //            represented by the LSB, and card socket 8 is
 //            represented by the MSB.
 //
-byte getCardStatus(int card)
+unsigned char getCardStatus(int card)
 {
-    byte status = 0;
+    unsigned char status = 0;
 
     // Start a SPI transaction with a max speed of 20MHz.
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
