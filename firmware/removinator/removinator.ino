@@ -21,14 +21,7 @@
 #define CMD_MAX_LEN 3
 
 // Serial commands
-#define CMD_CARD_1 "SC1"
-#define CMD_CARD_2 "SC2"
-#define CMD_CARD_3 "SC3"
-#define CMD_CARD_4 "SC4"
-#define CMD_CARD_5 "SC5"
-#define CMD_CARD_6 "SC6"
-#define CMD_CARD_7 "SC7"
-#define CMD_CARD_8 "SC8"
+#define CMD_CARD_N "SC"
 #define CMD_REMOVE_CARD "REM"
 #define CMD_STATUS "STA"
 #define CMD_DEBUG "DBG"
@@ -42,6 +35,7 @@
 #define ERR_CMDLEN "ERR_CMDLEN"
 #define ERR_PROTOCOL "ERR_PROTOCOL"
 #define ERR_NOCARD "ERR_NOCARD"
+#define ERR_BADIDX "ERR_BADIDX"
 
 // Debug output defines
 #define LOG_DBG_PREFIX "[DBG] "
@@ -104,34 +98,37 @@ void setup()
     Serial.begin(9600);
 }
 
+// return true if a regular command fully matches
+#define CMD_MATCHES(arg) (strcmp(command, arg) == 0)
+// return true if an 'indexed' (cmd with a card index) command matches
+#define INDEXED_CMD_MATCHES(arg) \
+    (strncmp(command, arg, sizeof(arg)-1) == 0 && strlen(command) == sizeof(arg))
+// return a string starting at the index argument of the cmd
+#define CMD_INDEX(arg) (command + sizeof(arg) - 1)
+// ensure the index is an ASCII number between '1' and '8'
+#define VALID_INDEX(arg) (*arg >= 0x31 && *arg <= 0x38)
+
 void loop()
 {
+    char *index;
+
     // Attempt to get a command from the serial port
     if (getCommand() == 0) {
         debug_print(String("Received command \"" + String(command) + "\""));
-        if (strcmp(command, CMD_CARD_1) == 0) {
-            insertCard(1);
-        } else if (strcmp(command, CMD_CARD_2) == 0) {
-            insertCard(2);
-        } else if (strcmp(command, CMD_CARD_3) == 0) {
-            insertCard(3);
-        } else if (strcmp(command, CMD_CARD_4) == 0) {
-            insertCard(4);
-        } else if (strcmp(command, CMD_CARD_5) == 0) {
-            insertCard(5);
-        } else if (strcmp(command, CMD_CARD_6) == 0) {
-            insertCard(6);
-        } else if (strcmp(command, CMD_CARD_7) == 0) {
-            insertCard(7);
-        } else if (strcmp(command, CMD_CARD_8) == 0) {
-            insertCard(8);
-        } else if (strcmp(command, CMD_REMOVE_CARD) == 0) {
+        if (INDEXED_CMD_MATCHES(CMD_CARD_N)) {
+            index = CMD_INDEX(CMD_CARD_N);
+            if (VALID_INDEX(index)) {
+                insertCard(atoi(index));
+            } else {
+                Serial.println(ERR_BADIDX);
+            }
+        } else if (CMD_MATCHES(CMD_REMOVE_CARD)) {
             removeCard(true);
-        } else if (strcmp(command, CMD_STATUS) == 0) {
+        } else if (CMD_MATCHES(CMD_STATUS)) {
             printCardStatus();
-        } else if (strcmp(command, CMD_HELP) == 0) {
+        } else if (CMD_MATCHES(CMD_HELP)) {
             usage();
-        } else if (strcmp(command, CMD_DEBUG) == 0) {
+        } else if (CMD_MATCHES(CMD_DEBUG)) {
             toggleDebug();
         } else {
             Serial.println(ERR_UNKNOWN_CMD);
@@ -580,37 +577,10 @@ void usage()
     Serial.println("\\r");
     Serial.println("Commands:");
     Serial.print("\t");
-    Serial.print(CMD_CARD_1);
+    Serial.print(CMD_CARD_N);
+    Serial.print("N");
     Serial.print("\t");
-    Serial.println("Insert card 1");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_2);
-    Serial.print("\t");
-    Serial.println("Insert card 2");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_3);
-    Serial.print("\t");
-    Serial.println("Insert card 3");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_4);
-    Serial.print("\t");
-    Serial.println("Insert card 4");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_5);
-    Serial.print("\t");
-    Serial.println("Insert card 5");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_6);
-    Serial.print("\t");
-    Serial.println("Insert card 6");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_7);
-    Serial.print("\t");
-    Serial.println("Insert card 7");
-    Serial.print("\t");
-    Serial.print(CMD_CARD_8);
-    Serial.print("\t");
-    Serial.println("Insert card 8");
+    Serial.println("Insert card N (where N is 1-8)");
     Serial.print("\t");
     Serial.print(CMD_REMOVE_CARD);
     Serial.print("\t");
