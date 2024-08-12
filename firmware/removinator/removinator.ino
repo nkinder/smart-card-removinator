@@ -86,18 +86,18 @@ void setup()
     pinMode(display_select_pin, OUTPUT);
     pinMode(socket_switch_select_pin, OUTPUT);
     pinMode(reader_switch_pin, OUTPUT);
-    
+
     // Set SPI slave select pins high to ignore master.  We will
     // enable SPI devices as needed.
     digitalWrite(display_select_pin, HIGH);
     digitalWrite(socket_switch_select_pin, HIGH);
-    
+
     // Start the SPI library.
     SPI.begin();
-    
+
     // Start with no card inserted.
     removeCard(false);
-    
+
     // Set up the serial port.
     Serial.begin(9600);
 }
@@ -134,7 +134,7 @@ void loop()
         } else {
             Serial.println(ERR_UNKNOWN_CMD);
         }
-        
+
         // Clear the previous command
         command[0] = '\0';
     }
@@ -154,10 +154,10 @@ int getCommand()
     int rc = 1;
     char inbyte = 0;
     int  command_length = 0;
-    
+
     if (Serial.available() > 0) {
         inbyte = Serial.read();
-        
+
         // Make sure the command start sequence is present.
         if (inbyte == CMD_PREFIX) {
             while ((inbyte != CMD_TERM) && (command_length <= CMD_MAX_LEN)) {
@@ -167,7 +167,7 @@ int getCommand()
                     command_length++;
                 }
             }
-        
+
             // See if we exceeded the maximum command length.
             if (inbyte != CMD_TERM) {
                 Serial.println(ERR_CMDLEN);
@@ -180,9 +180,9 @@ int getCommand()
         } else {
             // Illegally formatted command or garbage (protocol error).
             Serial.println(ERR_PROTOCOL);
-        }        
+        }
     }
-    
+
     return rc;
 }
 
@@ -233,7 +233,7 @@ int insertCard(int card)
         Serial.println(ERR_NOCARD);
         return 1;
     }
-    
+
     // First remove the existing card.  This will cycle the reader switch
     // pin to ensure that the reader actually detects a removal/insertion
     // event.  We give this a slight delay to ensure it triggers an event
@@ -244,7 +244,7 @@ int insertCard(int card)
     // Set the logic pins to select the requested card according to
     // the truth table.  We disable the muxes first to ensure we switch
     // directly to the requested card in cases where we have to change
-    // the state of multiple pins. 
+    // the state of multiple pins.
     switch(card) {
         case 1:
             digitalWrite(mux_en_pin, LOW);
@@ -307,7 +307,7 @@ int insertCard(int card)
             return 1;
         break;
     }
-    
+
     // Set the reader switch pin to low to trigger an insertion
     // event.
     digitalWrite(reader_switch_pin, LOW);
@@ -316,7 +316,7 @@ int insertCard(int card)
     updateDisplay(card);
     debug_print(String("Inserted card " + String(card)));
     inserted_card = card;
-    
+
     // Return our serial response.
     Serial.println(RESP_OK);
 
@@ -387,13 +387,13 @@ void removeCard(boolean print_response)
 int updateDisplay(int digit)
 {
     int rc = 0;
-    
+
     // Start a SPI transaction with a max speed of 20MHz.
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
-    
+
     // Select the display device.
     digitalWrite(display_select_pin, LOW);
-    
+
     // Display the requested digit by turning on the proper
     // LED segments.
     if ((digit >= 0) && (digit <= 9)) {
@@ -406,18 +406,18 @@ int updateDisplay(int digit)
         debug_print(String("Unexpected digit in updateDisplay(): " + String(digit)));
         rc = 1;
     }
-    
+
     // De-select the display device.  This rising edge pulse will trigger
     // an update to the actual display based off of the shift register contents.
     digitalWrite(display_select_pin, HIGH);
-    
+
     // End the SPI transaction.
     SPI.endTransaction();
-    
+
     if (rc == 0) {
         debug_print(String("Updated display to  " + String(digit)));
     }
-    
+
     return rc;
 }
 
@@ -445,14 +445,14 @@ void printCardStatus()
     int need_comma = 0;
     byte status = 0;
     String status_json = "{\"current\":";
-    
+
     // Add the currently inserted card to the status.
     status_json += inserted_card;
     status_json += ",\"present\":[";
-    
+
     // Get the status of all card sockets.
     status = getCardStatus(0);
-    
+
     // Add any present cards to the JSON array.
     for (i = 1; i <=8; i++) {
         if (((status >> (i - 1)) & 1) ^ 1) {
@@ -463,10 +463,10 @@ void printCardStatus()
             need_comma = 1;
         }
     }
-    
+
     // Terminate the JSON status.
     status_json += "]}";
-        
+
     // Return the status via serial.
     Serial.println(status_json);
 
@@ -501,20 +501,20 @@ void printCardStatus()
 byte getCardStatus(int card)
 {
     byte status = 0;
-    
+
     // Start a SPI transaction with a max speed of 20MHz.
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
-    
+
     // Pulse the PISO register IC to make it load the card
     // socket switch values.
     digitalWrite(socket_switch_select_pin, LOW);
     delayMicroseconds(20);
     digitalWrite(socket_switch_select_pin, HIGH);
-    
+
     // Retrieve the switch values via serial.
     status = SPI.transfer(0);
     debug_print(String("Received status: " + String(status)));
-    
+
     // End the SPI transaction.
     SPI.endTransaction();
 
@@ -523,7 +523,7 @@ byte getCardStatus(int card)
     if ((card >= 1) && (card <= 8)) {
         status = ((status >> (card - 1)) & 1) ^ 1;
     }
-    
+
     return status;
 }
 
@@ -534,7 +534,7 @@ byte getCardStatus(int card)
 void toggleDebug()
 {
     debug = !debug;
-    
+
     if (debug) {
         Serial.println(RESP_DBG_ON);
     } else {
