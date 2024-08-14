@@ -82,6 +82,11 @@ class SlotError(Error):
     pass
 
 
+class LockedError(Error):
+    """Exception raised attempting to lock a card slot."""
+    pass
+
+
 class Removinator:
     """Connection to a Smart Card Removinator controller"""
 
@@ -137,18 +142,18 @@ class Removinator:
         :raises: :exc:`SlotError`, :exc:`CommandError`, :exc:`ValueError`
         """
 
-        if (1 <= slot <= 8):
-            try:
-                self.send_command('SC{0}'.format(slot))
-            except CommandError as e:
-                # Raise a specific exception if an empty slot was selected.
-                if (self.last_result == 'ERR_NOCARD'):
-                    raise SlotError('No card present in slot {0}'.format(slot))
-
-                # Re-raise the original exception for all other errors.
-                raise
-        else:
+        if slot < 0 or slot > 8:
             raise ValueError('Slot must be between 1 and 8')
+
+        try:
+            self.send_command('SC{0}'.format(slot))
+        except CommandError as e:
+            if self.last_result == 'ERR_NOCARD':
+                raise SlotError('No card present in slot {0}'.format(slot)) from None
+            elif self.last_result == 'ERR_LOCKED':
+                raise LockedError('Slot {0} is locked'.format(slot)) from None
+            else:
+                raise e from None
 
     def remove_card(self):
         """
@@ -158,6 +163,48 @@ class Removinator:
         """
 
         self.send_command('REM')
+
+    def lock_card(self, slot):
+        """
+        Lock a specified card slot
+
+        This sends the LOCK command to the controller, with 'slot' as the
+        smart card slot number.
+
+        :param slot: the slot of the card to insert (1-8)
+        :type slot: int
+        :raises: :exc:`SlotError`, :exc:`CommandError`, :exc:`ValueError`
+        """
+
+        if slot < 0 or slot > 8:
+            raise ValueError('Slot must be between 1 and 8')
+
+        try:
+            self.send_command('LOCK{0}'.format(slot))
+        except CommandError as e:
+            if self.last_result == 'ERR_NOCARD':
+                raise SlotError('No card present in slot {0}'.format(slot)) from None
+            elif self.last_result == 'ERR_LOCKED':
+                raise LockedError('Slot {0} is already locked'.format(slot)) from None
+            else:
+                raise e from None
+
+    def unlock_card(self, slot):
+        """
+        Unlock a specified card slot
+
+        This sends the UNLOCK command to the controller, with 'slot' as the
+        smart card slot number.
+
+        :param slot: the slot of the card to insert (1-8)
+        :type slot: int
+        :raises: :exc:`SlotError`, :exc:`CommandError`, :exc:`ValueError`
+        """
+
+        if slot < 0 or slot > 8:
+            raise ValueError('Slot must be between 1 and 8')
+
+        self.send_command('UNLOCK{0}'.format(slot))
 
     def get_status(self):
         """
