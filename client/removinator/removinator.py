@@ -211,10 +211,10 @@ class Removinator:
         Get the status of the Removinator controller
 
         The status indicates the currently inserted card as well as a list of
-        slots that have a card present.
+        slots that have a card present and their locked/unlocked status.
 
-        :return: status containing the current and present cards
-        :rtype: dict containing *current* and *present* keys
+        :return: status containing current/present/locked card slots
+        :rtype: dict containing current/present/locked card slots
         :raises: :exc:`CommandError`
         """
 

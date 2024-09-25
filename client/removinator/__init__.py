@@ -4,14 +4,6 @@ def cli():
     import argparse
     from removinator import removinator
 
-    valid_commands = [
-        'insert_card',
-        'remove_card',
-        'lock_card',
-        'unlock_card',
-        'get_status',
-    ]
-
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='command')
 
