@@ -292,61 +292,50 @@ character and terminated with a carriage return ('\r').  The current list of
 supported commands (as provided by the usage command output) is as follows:
 
 ```
---- Smart Card Removinator (v0.1) ---
+--- Smart Card Removinator (v1.0.1) ---
 Command Format:
-	Prefix:		#
-	Terminator:	\r
+        Prefix:         #
+        Terminator:     \r
 Commands:
-	SC1	Insert card 1
-	SC2	Insert card 2
-	SC3	Insert card 3
-	SC4	Insert card 4
-	SC5	Insert card 5
-	SC6	Insert card 6
-	SC7	Insert card 7
-	SC8	Insert card 8
-	REM	Remove inserted card
-	STA	Return card socket status
-	DBG	Toggle debugging output
-	?	Show usage information
+        SCN     Insert card N (where N is 1-8)
+        REM     Remove inserted card
+        LOCKN   Lock card slot N (where N is 1-8)
+        UNLOCKN Unlock card slot N (where N is 1-8)
+        STA     Return card socket status
+        DBG     Toggle debugging output
+        ?       Show usage information
 ```
 
 The command responses are terse to limit the amount of data sent over the
 serial port, but they provide enough detail to indicate success or uniquely
 identify common errors.
 
-If an illegal command is entered (missing envelope, unknown command, etc.), the
-following response codes can be returned:
+If an illegal command is entered (missing envelope, unknown command, etc.),
+[one of the `ERR` responses](firmware/removinator/removinator.ino) is returned.
 
-  * _ERR_UNKNOWN_CMD_
-    * A proper envelope was used, but the command is unknown.
-  * _ERR_CMDLEN_
-    * The command envelope prefix was used, but we didn't receive a terminator.
-  * _ERR_PROTOCOL_
-    * Input was received with no envelope prefix.
+On success, all commands return `OK`.
 
-The `SC*` commands can reutrn the following responses:
-
-  * _OK_
-    * The card was successfully inserted/switched.
-  * _ERR_NOCARD_
-    * No card is present in the specified slot.
-
-The `REM` command will always return a response of 'OK'.  Using this command
+The `REM` command will always return a response of `OK`.  Using this command
 when no card is currently selected is a no-op and is not considered an error.
 
 The `STA` command response returns a JSON object that represents the status of
-the controller and its card slots.  It is composed of two attributes.  The
-_current_ attribute contains the slot number of the currently selected card.
-The _present_ attribute contains an array containing the ascending card socket
-numbers that have a card present.  Here is an example where card 4 is currently
-selected, and card sockets 1-6 have cards present:
+the controller and its card slots.  
+It is composed of
 
-```
-{"current":4,"present":[1,2,3,4,5,6]}
+* The `current` attribute contains the slot number of the currently selected
+  card.
+* The `present` attribute contains an array of card slot numbers that have
+  a card present.
+* The `locked` attribute contains an array of card slots that are locked.
+
+For example:
+
+```json
+{"current":4,"present":[1,2,3,4,5,6],"locked":[3]}
 ```
 
-If no card is currently selected, the "current" card will be reported as 0.
+If no card is currently selected, the "current" card will be reported as 0.  
+If no card is present or locked, the respective array will be `[]`.
 
 The `DBG` command toggles debugging output on or off.  It can return the
 following responses:
